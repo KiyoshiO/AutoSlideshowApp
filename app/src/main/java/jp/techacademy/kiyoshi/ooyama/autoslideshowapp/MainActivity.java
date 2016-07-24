@@ -3,18 +3,22 @@ package jp.techacademy.kiyoshi.ooyama.autoslideshowapp;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity  {
     //自動再生フラグ 自動再生=True
     boolean mode=false;
 
+    TextView textView;
+
     //タイマー
     Timer timer = null;
     Handler handler = new Handler();
@@ -44,6 +50,9 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         buttonInit();
+
+        textView=(TextView)findViewById(R.id.textView);
+
 
         // Android 6.0以降の場合
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -67,11 +76,31 @@ public class MainActivity extends AppCompatActivity  {
             case PERMISSIONS_REQUEST_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getContentsInfo();
+                } else {
+                    //Log.d("ANDROID","許可されなかった");
+                    //許可されなかった場合の処理
+                    new AlertDialog.Builder(this)
+                            .setTitle("許可されなかったのでこのアプリは利用できません")
+                            .setPositiveButton( "了解", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Log.d("ANDROID",String.valueOf(which));
+                                    finish();
+                                }
+                            }).show();
                 }
+
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getContentsInfo();
+
     }
 
 
@@ -160,6 +189,7 @@ public class MainActivity extends AppCompatActivity  {
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setImageURI(imageUri);
 
+        textView.setText(String.valueOf(imageCountNow+1) + " / " + String.valueOf(imageIdCountMax));
         Log.d("ANDROID",imageUri.toString());
 
     }
@@ -190,6 +220,9 @@ public class MainActivity extends AppCompatActivity  {
                 } while (cursor.moveToNext());
         }
         cursor.close();
+        imageCountNow=0;
+        imageSet(0);
+        textView.setText(String.valueOf(imageCountNow+1) + " / " + String.valueOf(imageIdCountMax));
     }
 
 
