@@ -24,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center">
+        android:gravity="center"
+        android:id="@+id/linearLayout">
 
         <Button
             android:layout_width="wrap_content"
@@ -56,6 +57,20 @@
             android:textSize="25dp"
             android:background="#ed9614" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="/"
+        android:id="@+id/textView"
+        android:layout_alignEnd="@+id/imageView"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:textAlignment="center"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp" />
 
 
 </RelativeLayout>
